@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.UserMapper">
+
+    <insert id="addOne" parameterType="User" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO tb_user(name,password,sex,department) VALUES(#{name},#{password},#{sex},#{department})
+    </insert>
+
+    <select id="getUserByNameAndPwd" resultType="User">
+        SELECT * FROM tb_user WHERE name=#{name} AND password=#{pwd}
+    </select>
+
+    <select id="getAll" resultType="User">
+        SELECT * FROM tb_user
+    </select>
+</mapper>

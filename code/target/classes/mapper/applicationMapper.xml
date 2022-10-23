@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.ApplicationMapper">
+
+    <insert id="addOne" parameterType="Application" keyProperty="id_application" useGeneratedKeys="true">
+        INSERT INTO tb_application(id_applicant,description,status,time) VALUES(#{id_applicant},#{description},#{status},#{time})
+    </insert>
+
+    <select id="getOneByUserIdAndApplyId" resultType="Application">
+        SELECT * FROM tb_application WHERE id_applicant = #{userId} AND id_application=#{applyId}
+    </select>
+
+    <select id="getByApplyId" resultType="Application">
+        SELECT * FROM tb_application WHERE id_application=#{applyId}
+    </select>
+
+    <select id="getAllByUserId" resultType="Application" parameterType="int">
+        SELECT * FROM tb_application WHERE id_applicant = #{userId}
+    </select>
+
+    <select id="getAll" resultType="Application">
+        SELECT * FROM tb_application
+    </select>
+
+    <select id="deleteOne">
+        DELETE FROM tb_application WHERE id_application=#{applyId} AND id_applicant=#{userId}
+    </select>
+
+    <update id="updateBatch" parameterType="java.util.List" >
+        update tb_application
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="description=case" suffix="end,">
+                <foreach collection="list" item="i" index="index">
+                    <if test="i.description != null and i.description != ''">
+                        when id_application=#{i.id_application} and id_applicant=#{i.id_applicant} then #{i.description}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="status=case" suffix="end,">
+                <foreach collection="list" item="i" index="index">
+                    <if test="i.status != null">
+                        when id_application=#{i.id_application} and id_applicant=#{i.id_applicant} then #{i.status}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id_application in
+        <foreach collection="list" separator="," item="i" index="index" open="(" close=")">
+            #{i.id_application}
+        </foreach>
+    </update>
+
+    <update id="updateOne" parameterType="Application">
+        UPDATE tb_application
+        <set>
+            <if test="description != null and description != ''">
+                description=#{description},
+            </if>
+            <if test="status != null and status != ''">
+                status=#{status}
+            </if>
+        </set>
+        WHERE id_applicant=#{id_applicant} AND id_application=#{id_application}
+    </update>
+</mapper>
